@@ -1,0 +1,1178 @@
+#pragma once
+#include<iostream>
+#include"LinkedList.h"
+using namespace std;
+class DEF : public LinkedList {
+
+public:
+	LinkedList* Create();
+	void Destroy(LinkedList* _ptList);
+	Node* GetNode(int _Object);
+	Node* Read(LinkedList* _ptList, unsigned int num);
+	void Traversal(LinkedList* _ptList);
+	Node* AppendFromHead(LinkedList* _ptList, int _iObject);
+	Node* AppendFromTail(LinkedList* _ptList, int _iObject);
+	Node* DeleteFromHead(LinkedList* _ptList);
+	Node* DeleteFromTail(LinkedList* _ptList);
+	void DeleteAll(LinkedList* _ptList);
+	Node* InsertBefor(LinkedList* _ptList, int num, int a);
+	Node* InsertAfter(LinkedList* _ptList, int num, int a);
+	Node* Delete(LinkedList* _ptList, int a);
+	Node* Modify(LinkedList* _ptList, int a, int b);
+	Node* LinearSearchByUnique(LinkedList* _ptList, int x);
+	Node* LinearSearchByDuplicate(LinkedList* _ptList, int x);
+	Node* BinarySearchByUnique(LinkedList* _ptList, int target, int start, int end);
+	Node* BinarySearchByDuplicate(LinkedList* _ptList, int target, int start, int end);
+	void SortByBubble(LinkedList* _ptList);
+	int SortByInsertion(LinkedList* _ptList);
+	void SortBySelection(LinkedList* _ptList);
+	int menu();
+};
+LinkedList* DEF::Create()
+{
+	LinkedList* _ptList = new LinkedList;
+	_ptList->m_pHead = _ptList->m_pTail;
+	_ptList->m_pTail = _ptList->m_pHead;
+	_ptList->m_pCurrent = NULL;
+	_ptList->m_uCount = 0;
+	return _ptList;
+}
+void DEF::Destroy(LinkedList* _ptList)
+{
+	delete(_ptList);
+}
+Node* DEF::GetNode(int _Object)
+{
+	Node* pNode = new Node;
+	pNode->m_pNext = pNode;
+	pNode->m_Previous = pNode;
+	pNode->m_iObject = _Object;
+	return pNode;
+}
+Node* DEF::Read(LinkedList* _ptList, unsigned int num)
+{
+	Node* pointer = new Node;
+	pointer = _ptList->m_pHead;
+	for (int i = 1; i < num; i++)
+	{
+		pointer = pointer->m_pNext;
+	}
+	printf("%d 번째 노드의 값은 %d", num, pointer->m_iObject);
+	free(pointer);
+	return 0;
+}
+void DEF::Traversal(LinkedList* _ptList)
+{
+
+	_ptList->m_pCurrent = _ptList->m_pHead;
+
+
+	for (int i = 0; i != _ptList->m_uCount; i++) {
+
+		cout << _ptList->m_pCurrent->m_iObject << " ";
+		_ptList->m_pCurrent = _ptList->m_pCurrent->m_pNext;
+	}
+	cout << endl;
+}
+Node* DEF::AppendFromHead(LinkedList* _ptList, int _iObject)
+{
+	_ptList->m_pCurrent = GetNode(_iObject);
+
+	if (_ptList->m_pHead) {
+		_ptList->m_pCurrent->m_pNext = _ptList->m_pHead;
+		_ptList->m_pHead->m_Previous = _ptList->m_pCurrent;
+	}
+	else
+		_ptList->m_pTail = _ptList->m_pCurrent;
+
+	_ptList->m_pHead = _ptList->m_pCurrent;
+	(_ptList->m_uCount)++;
+	cout << "맨 앞에 " << _iObject << " 추가" << endl;
+	return 0;
+}
+Node* DEF::AppendFromTail(LinkedList* _ptList, int _iObject)
+{
+	_ptList->m_pCurrent = GetNode(_iObject);
+	if (_ptList->m_pTail) {
+		_ptList->m_pTail->m_pNext = _ptList->m_pCurrent;
+		_ptList->m_pCurrent->m_Previous = _ptList->m_pTail;
+	}
+	else
+		_ptList->m_pHead = _ptList->m_pCurrent;
+
+	_ptList->m_pTail = _ptList->m_pCurrent;
+	(_ptList->m_uCount)++;
+	cout << "맨 뒤에 " << _iObject << " 추가" << endl;
+	return 0;
+}
+Node* DEF::DeleteFromHead(LinkedList* _ptList)
+{
+	if (_ptList->m_uCount < 1)
+	{
+		cout << "노드의 개수가 0개입니다." << endl;
+		return 0;
+	}
+	if (_ptList->m_uCount == 1)
+	{
+		Node* pointer = new Node;
+		pointer = _ptList->m_pHead;
+		free(pointer);
+		_ptList->m_pHead = NULL;
+		_ptList->m_pTail = NULL;
+		_ptList->m_pCurrent = NULL;
+		_ptList->m_uCount = 0;
+	}
+	else {
+		Node* pointer = new Node;
+		pointer = _ptList->m_pHead;
+		pointer = pointer->m_pNext;
+		pointer->m_Previous = pointer;
+		pointer = _ptList->m_pHead;
+		_ptList->m_pHead = pointer->m_pNext;
+		(_ptList->m_uCount)--;
+		free(pointer);
+	}
+	return 0;
+}
+Node* DEF::DeleteFromTail(LinkedList* _ptList)
+{
+	if (_ptList->m_uCount < 1)
+	{
+		cout << "노드의 개수가 0개입니다." << endl;
+		return 0;
+	}
+	if (_ptList->m_uCount == 1)
+	{
+		Node* pointer;
+		pointer = _ptList->m_pHead;
+		free(pointer);
+		_ptList->m_pHead = NULL;
+		_ptList->m_pTail = NULL;
+		_ptList->m_pCurrent = NULL;
+		_ptList->m_uCount = 0;
+	}
+	else {
+		Node* pointer;
+		pointer = _ptList->m_pTail;
+		pointer = pointer->m_Previous;
+		pointer->m_pNext = pointer;
+		pointer = _ptList->m_pTail;
+		_ptList->m_pTail = pointer->m_Previous;
+		free(pointer);
+		(_ptList->m_uCount)--;
+	}
+	return 0;
+}
+void DEF::DeleteAll(LinkedList* _ptList)
+{
+	_ptList->m_pCurrent = _ptList->m_pHead;
+	for (int i = _ptList->m_uCount; i > 1; i--)
+	{
+		_ptList->m_pCurrent = _ptList->m_pCurrent->m_pNext;
+		free(_ptList->m_pCurrent->m_Previous);
+	}
+	free(_ptList->m_pCurrent);
+	_ptList->m_pCurrent = NULL;
+	_ptList->m_pHead = NULL;
+	_ptList->m_pTail = NULL;
+	_ptList->m_uCount = 0;
+}
+Node* DEF::InsertBefor(LinkedList* _ptList, int num, int a)
+{
+	if (_ptList->m_uCount < 1)
+	{
+		cout << "노드의 개수가 0개입니다." << endl;
+		return 0;
+	}
+	if (_ptList->m_uCount < num)
+	{
+		cout << num << "번째 노드는 없습니다." << endl;
+		return 0;
+	}
+	Node* pointer = _ptList->m_pHead;
+	Node* pointer_before;
+	Node* New = GetNode(a);
+	if (num == 1)
+	{
+		AppendFromHead(_ptList, a);
+	}
+	else {
+		for (int i = 0; i != num - 1; i++)
+		{
+			pointer = pointer->m_pNext;
+		}
+		pointer_before = pointer->m_Previous;
+		New->m_pNext = pointer;
+		pointer->m_Previous = New;
+		New->m_Previous = pointer_before;
+		pointer_before->m_pNext = New;
+		(_ptList->m_uCount)++;
+	}
+	return 0;
+}
+Node* DEF::InsertAfter(LinkedList* _ptList, int num, int a)  //기존노드 뒷 삽입
+{
+	if (_ptList->m_uCount < 1)
+	{
+		cout << "노드의 개수가 0개입니다." << endl;
+		return 0;
+	}
+	else if (_ptList->m_uCount < num)
+	{
+		cout << num << "번째 노드는 없습니다." << endl;
+		return 0;
+	}
+	Node* pointer = _ptList->m_pHead;
+	Node* pointer_next;
+	Node* New = GetNode(a);
+	if (num == _ptList->m_uCount)
+	{
+		AppendFromTail(_ptList, a);
+	}
+	else {
+		for (int i = 0; i != num - 1; i++)
+		{
+			pointer = pointer->m_pNext;
+		}
+		pointer_next = pointer->m_pNext;
+		New->m_pNext = pointer_next;
+		pointer->m_pNext = New;
+		New->m_Previous = pointer;
+		pointer_next->m_Previous = New;
+		(_ptList->m_uCount)++;
+	}
+	return 0;
+}
+Node* DEF::Delete(LinkedList* _ptList, int a)
+{
+	Node* SomeThing;
+	Node* SomeThingBefore;
+	Node* SomeThingNext;
+	if (_ptList->m_uCount == 0)
+	{
+		cout << "노드의 개수가 0개입니다." << endl;
+	}
+	else if (_ptList->m_uCount < a)
+	{
+		cout << a << "번째 노드는 없습니다." << endl;
+	}
+	else {
+		if (_ptList->m_uCount == a) {
+			DeleteFromTail(_ptList);
+		}
+		else if (a == 1) {
+			DeleteFromHead(_ptList);
+		}
+		else if (a <= 2147483647 && a >= 0)
+		{
+			SomeThing = _ptList->m_pHead;
+			for (int i = 0; i <= a - 2; i++)
+			{
+				SomeThing = SomeThing->m_pNext;
+			}
+			SomeThingBefore = SomeThing->m_Previous;
+			SomeThingNext = SomeThing->m_pNext;
+
+
+			SomeThingBefore->m_pNext = SomeThingNext;
+			SomeThingNext->m_Previous = SomeThingBefore;
+
+			free(SomeThing);
+			(_ptList->m_uCount)--;
+		}
+		else
+			cout << "2147483647이하의 양의 정수를 입력해주십시오" << endl;
+	}
+	return 0;
+}
+Node* DEF::Modify(LinkedList* _ptList, int a, int b)
+{
+	Node* SomeThing;
+	if (_ptList->m_uCount == 0)
+	{
+		cout << "노드의 개수가 0개입니다." << endl;
+	}
+	else if (_ptList->m_uCount < a)
+	{
+		cout << a << "번째 노드는 없습니다." << endl;
+	}
+	else {
+		SomeThing = _ptList->m_pHead;
+		for (int i = 0; i <= a - 2; i++)
+		{
+			SomeThing = SomeThing->m_pNext;
+		}
+		SomeThing->m_iObject = b;
+	}
+	return 0;
+}
+Node* DEF::LinearSearchByUnique(LinkedList* _ptList, int x)
+{
+	if (_ptList->m_uCount < 1)
+	{
+		cout << "노드의 개수가 0개입니다." << endl;
+		return 0;
+	}
+	int ox = 0;
+	int i = 0;
+	Node* pointer = _ptList->m_pHead;
+	for (i = 0; i != _ptList->m_uCount; i++)
+	{
+		if (pointer->m_iObject == x)
+		{
+			cout << i + 1 << "번째에 있습니다." << endl;
+			break;
+			ox++;
+		}
+		pointer = pointer->m_pNext;
+		if (i == _ptList->m_uCount - 1) {
+			if (ox != 0)
+			{
+				continue;
+			}
+			else if (ox == 0) {
+				cout << "없는 숫자입니다" << endl;
+			}
+		}
+	}
+	return 0;
+}
+Node* DEF::LinearSearchByDuplicate(LinkedList* _ptList, int x)
+{
+	if (_ptList->m_uCount < 1)
+	{
+		cout << "노드의 개수가 0개입니다." << endl;
+		return 0;
+	}
+	int ox = 0;
+	int i = 0;
+	Node* pointer = _ptList->m_pHead;
+	for (i = 0; i != _ptList->m_uCount; i++)
+	{
+		if (pointer->m_iObject == x)
+		{
+			cout << i + 1 << "번째";
+			ox++;
+		}
+		pointer = pointer->m_pNext;
+		if (i == _ptList->m_uCount - 1) {
+			if (ox != 0)
+			{
+				cout << "에 있습니다." << endl;
+			}
+			else if (ox == 0) {
+				cout << "없는 숫자 입니다." << endl;
+			}
+		}
+	}
+	return 0;
+}
+Node* DEF::BinarySearchByUnique(LinkedList* _ptList, int target, int start, int end) {
+	if (_ptList->m_uCount == 0)
+	{
+		cout << "노드의 개수가 0개입니다." << endl;
+		return 0;
+	}
+	Node* pointer = _ptList->m_pHead;
+	int where = 1;
+	int ox = 0;
+	int i = 0;
+	int half;
+	int what;
+	for (i = 0; i != _ptList->m_uCount; i++)
+	{
+		if (pointer->m_iObject == target)
+		{
+			ox++;
+		}
+		pointer = pointer->m_pNext;
+		if (i == _ptList->m_uCount - 1) {
+			if (ox != 0)
+			{
+				continue;
+			}
+			else if (ox == 0) {
+				cout << "없는 숫자 입니다." << endl;
+				return 0;
+			}
+		}
+	}
+	pointer = _ptList->m_pHead;
+	half = (start + end) / 2;
+	/*
+	printf("start : %d\n", start);
+	printf("half : %d\n", half);
+	printf("end : %d\n", end);
+	*/
+	for (int i = 0; i < half; i++)
+	{
+		pointer = pointer->m_pNext;
+		where = where + 1;
+	}
+
+	what = pointer->m_iObject;
+	if (what == target)
+	{
+		/*
+		printf("target : %d\n", target);
+		printf("what : %d\n", what);
+		*/
+		cout << where << "번째" << endl;
+		return 0;
+	}
+
+	else if (what < target)
+	{
+		where = where + 1;
+		pointer = pointer->m_pNext;
+		BinarySearchByUnique(_ptList, target, where, end);
+	}
+	else if (what > target)
+	{
+		where = where - 1;
+		pointer = pointer->m_Previous;
+		BinarySearchByUnique(_ptList, target, start, where);
+	}
+}
+Node* DEF::BinarySearchByDuplicate(LinkedList* _ptList, int target, int start, int end)
+{
+
+	if (end < 1 || start > _ptList->m_uCount || start > end)
+	{
+	}
+	else
+	{
+		if (_ptList->m_uCount == 0)
+		{
+			cout << "노드의 개수가 0개입니다." << endl;
+			return 0;
+		}
+		Node* pointer = _ptList->m_pHead;
+		int where = 1;
+		int ox = 0;
+		int count = 0;
+		int i = 0;
+		int half;
+		int what;
+
+		for (i = 0; i != _ptList->m_uCount; i++)
+		{
+			if (pointer->m_iObject == target)
+			{
+				ox++;
+			}
+			pointer = pointer->m_pNext;
+			if (i == _ptList->m_uCount - 1) {
+				if (ox != 0)
+				{
+					continue;
+				}
+				else if (ox == 0) {
+					cout << "없는 숫자 입니다." << endl;
+					return 0;
+				}
+			}
+		}
+
+
+		pointer = _ptList->m_pHead;
+		half = (start + end) / 2;
+		/*
+		printf("start : %d\n", start);
+		printf("half : %d\n", half);
+		printf("end : %d\n", end);
+		*/
+
+		for (int i = 1; i < half; i++)
+		{
+			pointer = pointer->m_pNext;
+			where = where + 1;
+		}
+		what = pointer->m_iObject;
+
+		if (what == target)
+		{
+			cout << where << "번째 ";
+			count++;
+
+			BinarySearchByDuplicate(_ptList, target, where + 1, end);
+			BinarySearchByDuplicate(_ptList, target, start, where - 1);
+		}
+		else if (what < target)
+		{
+			BinarySearchByDuplicate(_ptList, target, where + 1, end);
+		}
+		else if (what > target)
+		{
+			BinarySearchByDuplicate(_ptList, target, start, where - 1);
+		}
+
+		if (count != 0)
+		{
+		}
+	}
+}
+void DEF::SortByBubble(LinkedList* _ptList)
+{
+
+	for (int i = 1; i != _ptList->m_uCount; i++)
+	{
+		if (_ptList->m_uCount == 0)
+		{
+			cout << "노드의 개수가 0개입니다." << endl;
+			break;
+		}
+		if (_ptList->m_uCount == 1)
+		{
+			break;
+		}
+		Node* pointer = _ptList->m_pHead;
+		Node* pointerNext = pointer->m_pNext;
+		for (int j = 1; j != _ptList->m_uCount; j++)
+		{
+			if (pointer->m_iObject > pointerNext->m_iObject)
+			{
+				int temp = 0;
+				temp = pointerNext->m_iObject;
+				pointerNext->m_iObject = pointer->m_iObject;
+				pointer->m_iObject = temp;
+				pointer = pointer->m_pNext;
+				pointerNext = pointerNext->m_pNext;
+				continue;
+			}
+			pointer = pointer->m_pNext;
+			pointerNext = pointerNext->m_pNext;
+		}
+	}
+}
+int DEF::SortByInsertion(LinkedList* _ptList)
+{
+	if (_ptList->m_uCount == 0)
+	{
+		cout << "노드의 개수가 0개입니다." << endl;
+		return 0;
+	}
+	Node* pointer = _ptList->m_pHead;
+	for (int i = 1; i < _ptList->m_uCount; i++)
+	{
+		if (_ptList->m_uCount == 1)
+		{
+			break;
+		}
+		Node* Next_pointer = pointer->m_pNext;
+		for (int k = 1; k < _ptList->m_uCount; k++)
+		{
+			if (pointer->m_iObject > Next_pointer->m_iObject)
+			{
+				int temp;
+				temp = pointer->m_iObject;
+				pointer->m_iObject = Next_pointer->m_iObject;
+				Next_pointer->m_iObject = temp;
+			}
+			Next_pointer = Next_pointer->m_pNext;
+		}
+		pointer = pointer->m_pNext;
+	}
+	return 0;
+}
+void DEF::SortBySelection(LinkedList* _ptList)
+{
+
+	for (int z = 0; z < _ptList->m_uCount - 1; z++)
+	{
+		if (_ptList->m_uCount == 0)
+		{
+			cout << "노드의 개수가 0개입니다." << endl;
+			break;
+		}
+		if (_ptList->m_uCount == 1)
+		{
+			break;
+		}
+		Node* pointer = _ptList->m_pHead;
+		Node* head = _ptList->m_pHead;
+		int Min;
+
+		for (int x = 0; x < z; x++)
+		{
+			pointer = pointer->m_pNext;
+		}
+		Min = pointer->m_iObject;
+
+		for (int i = z; i < _ptList->m_uCount; i++)
+		{
+			if (pointer->m_iObject < Min)
+			{
+				Min = pointer->m_iObject;
+			}
+			pointer = pointer->m_pNext;
+		}
+
+		pointer = _ptList->m_pHead;
+		for (int x = 0; x < z; x++)
+		{
+			pointer = pointer->m_pNext;
+		}
+
+		for (int x = 0; x < _ptList->m_uCount; x++)
+		{
+			if (pointer->m_iObject != Min)
+			{
+				pointer = pointer->m_pNext;
+			}
+		}
+
+		for (int x = 0; x < z; x++)
+		{
+			head = head->m_pNext;
+		}
+		int temp = 0;
+		temp = head->m_iObject;
+		head->m_iObject = pointer->m_iObject;
+		pointer->m_iObject = temp;
+	}
+}
+int DEF::menu()
+{
+	char a;
+	int number;
+	int word = 0;
+	cout << "관리자를 만드시겠습니까? x입력시 종료(o/x) : ";
+	cin >> a;
+	system("cls");
+	if (a == 'x')
+	{
+		cout << "종료합니다." << endl;
+		return 0;
+	}
+	else if (a == 'o')
+
+	{
+		cout << "관리자 master가 생성되었습니다." << endl;
+	}
+	else
+	{
+		cout << "잘못입력하셨습니다. 프로그램을 종료합니다." << endl;
+		return 0;
+	}
+
+	LinkedList* master = Create();
+	while (1)
+	{
+		cout << " ------------기능을 선택해 주십쇼--------------" << endl;
+		cout << "|1.맨 앞에 노드 추가                           |" << endl;
+		cout << "|2.맨 뒤에 노드 추가                           |" << endl;
+		cout << "|3.리스트의 노드들 순회                        |" << endl;
+		cout << "|4.관리자 지우기(끝내기)                       |" << endl;
+		cout << "|5.맨 앞 노드 지우기                           |" << endl;
+		cout << "|6.맨 뒤 노드 지우기                           |" << endl;
+		cout << "|7.모든 노드 지우기                            |" << endl;
+		cout << "|8.지정 노드 지우기                            |" << endl;
+		cout << "|9.임의 노드 수정                              |" << endl;
+		cout << "|10.단일 선형 탐색                             |" << endl;
+		cout << "|11.버블정렬                                   |" << endl;
+		cout << "|12.삽입정렬                                   |" << endl;
+		cout << "|13.선택정렬                                   |" << endl;
+		cout << "|14.단일 이진 탐색                             |" << endl;
+		cout << "|15.다중 선형 탐색                             |" << endl;
+		cout << "|16.기존 노드 앞 삽입                          |" << endl;
+		cout << "|17.기존 노드 뒤 삽입                          |" << endl;
+		cout << "|18.다중 이진 탐색                             |" << endl;
+		cout << " ----------------------------------------------" << endl;
+		cout << "입력 : " << endl;
+
+		char tmp[100];
+		rewind(stdin);
+		gets_s(tmp);
+		for (int f = 0; tmp[f] != '\0'; f++)
+		{
+			if (tmp[f] >= '0' && tmp[f] <= '9')
+			{
+			}
+			else
+			{
+				word = word + 1;
+				break;
+			}
+		}
+		if (word != 0)
+		{
+			system("cls");
+			word = 0;
+			cout << "문자가 포함되어있음 다시 입력하시오" << endl;
+			continue;
+		}
+		number = atoi(tmp);
+		if (a > 2147483647 && a < 0)
+		{
+			cout << "2147483647이하의 양의 정수를 입력해주십시오" << endl;
+			continue;
+		}
+		system("cls");
+		if (number == 1) {
+			char tmp[100];
+			unsigned int append_num = 0;
+			cout << "추가할 노드의 고유 숫자를 입력하시오: ";
+			rewind(stdin);
+			gets_s(tmp);
+			for (int f = 0; tmp[f] != '\0'; f++)
+			{
+				if (tmp[f] >= '0' && tmp[f] <= '9')
+				{
+				}
+				else
+				{
+					word = word + 1;
+					break;
+				}
+			}
+			if (word != 0)
+			{
+				system("cls");
+				word = 0;
+				cout << "문자가 포함되어있음 다시 입력하시오" << endl;
+				continue;
+			}
+			append_num = atoi(tmp);
+			if (append_num < 2147483647 && append_num > 0)
+			{
+				AppendFromHead(master, append_num);
+				Traversal(master);
+				continue;
+			}
+			cout << "2147483647이하의 양의 정수를 입력해주십시오" << endl;
+			continue;
+
+		}
+		else if (number == 2) {
+			char tmp[100];
+			unsigned int append_num = 0;
+			cout << "추가할 노드의 고유 숫자를 입력하시오: ";
+			rewind(stdin);
+			gets_s(tmp);
+			for (int f = 0; tmp[f] != '\0'; f++)
+			{
+				if (tmp[f] >= '0' && tmp[f] <= '9')
+				{
+				}
+				else
+				{
+					word = word + 1;
+					break;
+				}
+			}
+			if (word != 0)
+			{
+				system("cls");
+				word = 0;
+				cout << "문자가 포함되어있음 다시 입력하시오" << endl;
+				continue;
+			}
+			append_num = atoi(tmp);
+			if (append_num < 2147483647 && append_num > 0)
+			{
+				AppendFromTail(master, append_num);
+				Traversal(master);
+				continue;
+			}
+			cout << "2147483647이하의 양의 정수를 입력해주십시오" << endl;
+			continue;
+		}
+		else if (number == 3) {
+			Traversal(master);
+		}
+		else if (number == 4) {
+			Destroy(master);
+			cout << "종료합니다." << endl;
+			return 0;
+		}
+		else if (number == 5) {
+			DeleteFromHead(master);
+		}
+		else if (number == 6) {
+			DeleteFromTail(master);
+		}
+		else if (number == 7) {
+			if (master->m_uCount == 0)
+			{
+				cout << "노드의 개수가 0개입니다." << endl;
+				continue;
+			}
+			DeleteAll(master);
+		}
+		else if (number == 8) {
+			unsigned int append_num = 0;
+			cout << "몇번째 노드를 삭제하겠습니까? : ";
+			char tmp[100];
+			rewind(stdin);
+			gets_s(tmp);
+			for (int f = 0; tmp[f] != '\0'; f++)
+			{
+				if (tmp[f] >= '0' && tmp[f] <= '9')
+				{
+				}
+				else
+				{
+					word = word + 1;
+					break;
+				}
+			}
+			if (word != 0)
+			{
+				system("cls");
+				word = 0;
+				cout << "문자가 포함되어있음 다시 입력하시오" << endl;
+				continue;
+			}
+			append_num = atoi(tmp);
+			if (append_num < 2147483647 && append_num > 0)
+			{
+				Delete(master, append_num);
+				Traversal(master);
+				continue;
+			}
+			cout << "2147483647이하의 양의 정수를 입력해주십시오" << endl;
+			continue;
+		}
+		else if (number == 9) {
+			unsigned int aNum;
+			unsigned int bNum;
+			cout << "몇번째 노드를 변경하시겠습니까? : " << endl;
+			char tmp[100];
+			rewind(stdin);
+			gets_s(tmp);
+			for (int f = 0; tmp[f] != '\0'; f++)
+			{
+				if (tmp[f] >= '0' && tmp[f] <= '9')
+				{
+				}
+				else
+				{
+					word = word + 1;
+					break;
+				}
+			}
+			if (word != 0)
+			{
+				system("cls");
+				word = 0;
+				cout << "문자가 포함되어있음 다시 입력하시오" << endl;
+				continue;
+			}
+			aNum = atoi(tmp);
+			if (aNum >= 2147483647 || aNum <= 0)
+			{
+				cout << "2147483647이하의 양의 정수를 입력해주십시오" << endl;
+				continue;
+			}
+			cout << "노드의 고유 번호를 무엇으로 바꾸시겠습니까? : ";
+
+			rewind(stdin);
+			gets_s(tmp);
+			for (int f = 0; tmp[f] != '\0'; f++)
+			{
+				if (tmp[f] >= '0' && tmp[f] <= '9')
+				{
+				}
+				else
+				{
+					word = word + 1;
+					break;
+				}
+			}
+			if (word != 0)
+			{
+				system("cls");
+				word = 0;
+				cout << "문자가 포함되어있음 다시 입력하시오" << endl;
+				continue;
+			}
+			bNum = atoi(tmp);
+			if (bNum >= 2147483647 || bNum <= 0)
+			{
+				cout << "2147483647이하의 양의 정수를 입력해주십시오" << endl;
+				continue;
+			}
+			system("cls");
+			Modify(master, aNum, bNum);
+		}
+		else if (number == 10) {
+			unsigned int Num;
+			cout << "찾을 고유 숫자를 입력하십시오 : ";
+			char tmp[100];
+			rewind(stdin);
+			gets_s(tmp);
+			for (int f = 0; tmp[f] != '\0'; f++)
+			{
+				if (tmp[f] >= '0' && tmp[f] <= '9')
+				{
+				}
+				else
+				{
+					word = word + 1;
+					break;
+				}
+			}
+			if (word != 0)
+			{
+				system("cls");
+				word = 0;
+				cout << "문자가 포함되어있음 다시 입력하시오" << endl;
+				continue;
+			}
+			Num = atoi(tmp);
+			if (Num >= 2147483647 || Num <= 0)
+			{
+				cout << "2147483647이하의 양의 정수를 입력해주십시오" << endl;
+				continue;
+			}
+			LinearSearchByUnique(master, Num);
+		}
+		else if (number == 11)
+		{
+			SortByBubble(master);
+		}
+		else if (number == 12)
+		{
+			SortByInsertion(master);
+		}
+		else if (number == 13)
+		{
+			SortBySelection(master);
+		}
+		else if (number == 14)
+		{
+			SortByInsertion(master);
+			int target;
+			cout << "찾을 고유 숫자를 입력하십시오 : ";
+			char tmp[100];
+			rewind(stdin);
+			gets_s(tmp);
+			for (int f = 0; tmp[f] != '\0'; f++)
+			{
+				if (tmp[f] >= '0' && tmp[f] <= '9')
+				{
+				}
+				else
+				{
+					word = word + 1;
+					break;
+				}
+			}
+			if (word != 0)
+			{
+				system("cls");
+				word = 0;
+				cout << "문자가 포함되어있음 다시 입력하시오" << endl;
+				continue;
+			}
+			target = atoi(tmp);
+			if (target >= 2147483647 || target <= 0)
+			{
+				cout << "2147483647이하의 양의 정수를 입력해주십시오" << endl;
+				continue;
+			}
+			system("cls");
+			int mid;
+			if ((1 + master->m_uCount) % 2 == 1) {
+				mid = 1 + master->m_uCount / 2 - 1;
+			}
+			else {
+				mid = 1 + master->m_uCount / 2;
+			}
+			BinarySearchByUnique(master, target, 1, master->m_uCount);
+		}
+		else if (number == 15)
+		{
+			int target;
+			cout << "찾을 고유 숫자를 입력하십시오 : ";
+			char tmp[100];
+			rewind(stdin);
+			gets_s(tmp);
+			for (int f = 0; tmp[f] != '\0'; f++)
+			{
+				if (tmp[f] >= '0' && tmp[f] <= '9')
+				{
+				}
+				else
+				{
+					word = word + 1;
+					break;
+				}
+			}
+			if (word != 0)
+			{
+				system("cls");
+				word = 0;
+				cout << "문자가 포함되어있음 다시 입력하시오" << endl;
+				continue;
+			}
+			target = atoi(tmp);
+			if (target >= 2147483647 || target <= 0)
+			{
+				cout << "2147483647이하의 양의 정수를 입력해주십시오" << endl;
+				continue;
+			}
+			system("cls");
+			LinearSearchByDuplicate(master, target);
+		}
+		else if (number == 16) {
+			int where, num;
+			cout << "추가할 위치를 입력하십시오 : ";
+			char tmp[100];
+			rewind(stdin);
+			gets_s(tmp);
+			for (int f = 0; tmp[f] != '\0'; f++)
+			{
+				if (tmp[f] >= '0' && tmp[f] <= '9')
+				{
+				}
+				else
+				{
+					word = word + 1;
+					break;
+				}
+			}
+			if (word != 0)
+			{
+				system("cls");
+				word = 0;
+				cout << "문자가 포함되어있음 다시 입력하시오" << endl;
+				continue;
+			}
+			where = atoi(tmp);
+			if (where >= 2147483647 || where <= 0)
+			{
+				cout << "2147483647이하의 양의 정수를 입력해주십시오" << endl;
+				continue;
+			}
+			system("cls");
+			cout << "추가할 숫자를 입력하십시오 : ";
+			rewind(stdin);
+			gets_s(tmp);
+			for (int f = 0; tmp[f] != '\0'; f++)
+			{
+				if (tmp[f] >= '0' && tmp[f] <= '9')
+				{
+				}
+				else
+				{
+					word = word + 1;
+					break;
+				}
+			}
+			if (word != 0)
+			{
+				system("cls");
+				word = 0;
+				cout << "문자가 포함되어있음 다시 입력하시오" << endl;
+				continue;
+			}
+			num = atoi(tmp);
+			if (num >= 2147483647 || num <= 0)
+			{
+				cout << "2147483647이하의 양의 정수를 입력해주십시오" << endl;
+				continue;
+			}
+			system("cls");
+			InsertBefor(master, where, num);
+		}
+		else if (number == 17) {
+			int where, num;
+			cout << "추가할 위치를 입력하십시오 : ";
+			char tmp[100];
+			rewind(stdin);
+			gets_s(tmp);
+			for (int f = 0; tmp[f] != '\0'; f++)
+			{
+				if (tmp[f] >= '0' && tmp[f] <= '9')
+				{
+				}
+				else
+				{
+					word = word + 1;
+					break;
+				}
+			}
+			if (word != 0)
+			{
+				system("cls");
+				word = 0;
+				cout << "문자가 포함되어있음 다시 입력하시오" << endl;
+				continue;
+			}
+			where = atoi(tmp);
+			if (where >= 2147483647 || where <= 0)
+			{
+				cout << "2147483647이하의 양의 정수를 입력해주십시오" << endl;
+				continue;
+			}
+			system("cls");
+			cout << "추가할 숫자를 입력하십시오 : ";
+			rewind(stdin);
+			gets_s(tmp);
+			for (int f = 0; tmp[f] != '\0'; f++)
+			{
+				if (tmp[f] >= '0' && tmp[f] <= '9')
+				{
+				}
+				else
+				{
+					word = word + 1;
+					break;
+				}
+			}
+			if (word != 0)
+			{
+				system("cls");
+				word = 0;
+				cout << "문자가 포함되어있음 다시 입력하시오" << endl;
+				continue;
+			}
+			num = atoi(tmp);
+			if (num >= 2147483647 || num <= 0)
+			{
+				cout << "2147483647이하의 양의 정수를 입력해주십시오" << endl;
+				continue;
+			}
+			system("cls");
+			InsertAfter(master, where, num);
+		}
+		else if (number == 18) {
+			{
+				SortByInsertion(master);
+				int target, start, end;
+				start = 1;
+				end = master->m_uCount;
+				cout << "찾을 고유 숫자를 입력하십시오 : ";
+				char tmp[100];
+				rewind(stdin);
+				gets_s(tmp);
+				for (int f = 0; tmp[f] != '\0'; f++)
+				{
+					if (tmp[f] >= '0' && tmp[f] <= '9')
+					{
+					}
+					else
+					{
+						word = word + 1;
+						break;
+					}
+				}
+				if (word != 0)
+				{
+					system("cls");
+					word = 0;
+					cout << "문자가 포함되어있음 다시 입력하시오" << endl;
+					continue;
+				}
+				target = atoi(tmp);
+				BinarySearchByDuplicate(master, target, start, end);
+			}
+		}
+		else {
+			cout << "잘못된 접근입니다." << endl;
+		}
+		Traversal(master);
+	}
+}
